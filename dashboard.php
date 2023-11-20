@@ -5,13 +5,21 @@ if($con){
   if(isset($_SESSION['logged_in'])){
     if($_SESSION['logged_in']){
       $user_id = $_SESSION['id'];
-      // echo($user_id);
 
       $sql="SELECT * FROM users WHERE userid='$user_id'";
       $result=mysqli_query($con,$sql);
-      // $users=mysqli_fetch_all($result,MYSQLI_ASSOC);
       $users=mysqli_fetch_all($result,MYSQLI_ASSOC);
-      // print_r($resulting);
+
+
+    // Calculating total money budgeted for
+      $sql="SELECT * FROM expense_category_tbl";
+      $result=mysqli_query($con,$sql);
+      $expenses=mysqli_fetch_all($result,MYSQLI_ASSOC);
+
+    // Calculating total money spent
+      $sql="SELECT * FROM expense_tbl";
+      $result=mysqli_query($con,$sql);
+      $spendings=mysqli_fetch_all($result,MYSQLI_ASSOC);
 
     } else {
       header("Location:index.php");
@@ -30,6 +38,8 @@ if($con){
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  
+  
 
   <!-- BOOTSTRAP STYLES-->
   <link href="assets/css/bootstrap.css" rel="stylesheet" />
@@ -138,22 +148,44 @@ if($con){
             <!-- Card -->
             <div class="dash-container">
               <div class="dash-card">
-                <h4>Amount Spent</h4>
-                <p>Ksh 30000</p>
+                <h5>Amount Budgeted For</h5>
+                <p>
+
+                <?php
+                  $expenditure=0;
+                  foreach($expenses as $expense){
+                    $expenditure+=$expense['amount'];
+                  }
+                  echo("Ksh ".$expenditure);
+                ?>
+
+                </p>
               </div>
             </div>
           <!-- Card -->
             <div class="dash-container">
               <div class="dash-card">
                 <h4>Amount Spent</h4>
-                <p>Ksh 30000</p>
+                <p>
+                  <?php
+                     $spent=0;
+                     foreach($spendings as $spending){
+                       $spent+=$spending['amount_spent'];
+                     }
+                     echo("Ksh ".$spent);
+                  ?>
+                </p>
               </div>
             </div>
           <!-- Card -->
             <div class="dash-container">
               <div class="dash-card">
-                <h4>Amount Spent</h4>
-                <p>Ksh 30000</p>
+                <h4>Balance</h4>
+                <p>
+                  <?php
+                    echo("Ksh ".$expenditure-$spent);
+                  ?>
+                </p>
               </div>
             </div>
           <!-- Card -->
